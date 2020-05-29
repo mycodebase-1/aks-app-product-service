@@ -84,4 +84,4 @@ spec:
   selector:
     app: product-service
   sessionAffinity: None
-  type: LoadBalancer
+  type: NodePort
