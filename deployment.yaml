@@ -1,0 +1,87 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: product-service
+  name: product-service
+  namespace: default
+spec:
+  replicas: 1
+  minReadySeconds: 45
+  selector:
+    matchLabels:
+      app: product-service
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: product-service
+    spec:
+      containers:
+        - name: product-service
+          image: dellemcacr.azurecr.io/product-service
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: azure.cosmosdb.uri
+              valueFrom:
+                configMapKeyRef:
+                  name: product-service-cosmosdb-uri
+                  key: azure.cosmosdb.uri
+            - name: azure.cosmosdb.key
+              valueFrom:
+                secretKeyRef:
+                  name: product-service-cosmos-key
+                  key: azure.cosmosdb.key
+            - name: azure.cosmosdb.database
+              valueFrom:
+                configMapKeyRef:
+                  name: product-service-cosmosdb-uri
+                  key: azure.cosmosdb.database
+          ports:
+            - name: probe-port
+              containerPort: 8080
+          resources: #CHANGE
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 1024Mi #256Mi
+          readinessProbe:
+            httpGet:
+              path: /product/1
+              port: probe-port
+            failureThreshold: 5
+            periodSeconds: 10
+            initialDelaySeconds: 60
+          livenessProbe:
+            httpGet:
+              path: /product/1
+              port: probe-port
+            failureThreshold: 5
+            periodSeconds: 10
+            initialDelaySeconds: 60
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: product-service
+  name: product-service
+  namespace: default
+spec:
+  ports:
+    - # nodePort: 30702 #CHANGE
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: product-service
+  sessionAffinity: None
+  type: LoadBalancer
