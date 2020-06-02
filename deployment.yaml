@@ -25,22 +25,6 @@ spec:
         - name: product-service
           image: dellemcacr.azurecr.io/product-service
           imagePullPolicy: IfNotPresent
-          env:
-            - name: azure.cosmosdb.uri
-              valueFrom:
-                configMapKeyRef:
-                  name: product-service-cosmosdb-uri
-                  key: azure.cosmosdb.uri
-            - name: azure.cosmosdb.key
-              valueFrom:
-                secretKeyRef:
-                  name: product-service-cosmos-key
-                  key: azure.cosmosdb.key
-            - name: azure.cosmosdb.database
-              valueFrom:
-                configMapKeyRef:
-                  name: product-service-cosmosdb-uri
-                  key: azure.cosmosdb.database
           ports:
             - name: probe-port
               containerPort: 8080

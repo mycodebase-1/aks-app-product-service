@@ -26,4 +26,9 @@ public class ProductController {
 		List<Products> products = productService.getAllProducts();
 		return new ResponseEntity<List<Products>>(products, HttpStatus.OK);
 	}
+
+	@GetMapping(path = "/healthz")
+	public ResponseEntity<String> appHealth() {
+		return new ResponseEntity<String>("App is running", HttpStatus.OK);
+	}
 }
