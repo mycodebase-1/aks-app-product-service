@@ -8,3 +8,9 @@ To use the app using CosmodDB database, checkout the cosmosdb branch from this r
  - Infrastructure pipelines are created
 
 ## Execute the pipeline in Azure DevOps
+
+
+### Login to AKS
+```
+az aks get-credentials --resource-group <<RES_GROUP>> --name <<AKS_NAME>>
+```
