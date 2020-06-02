@@ -8,9 +8,20 @@ trigger:
 resources:
 - repo: self
 
+parameters:
+- name: resourceGroup # name of the parameter; required
+  type: string # data type of the parameter; required
+  default: aks-resg-001
+- name: kubernetesServiceConnection
+  type: string
+  default: aks-sc
+- name: ACRServiceConnection
+  type: string
+  default: dellemcacr-sc
+
 variables:
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: 'dellemcacr-sc'
+  dockerRegistryServiceConnection: ${{ parameters.ACRServiceConnection }}
   imageRepository: 'product-service'
   containerRegistry: 'dellemcacr.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
@@ -75,7 +86,7 @@ stages:
     - task: KubernetesManifest@0
       inputs:
         action: 'deploy'
-        kubernetesServiceConnection: 'aks-sc'
+        kubernetesServiceConnection: ${{ parameters.kubernetesServiceConnection }}
         namespace: 'default'
         manifests: '$(System.ArtifactsDirectory)/deployment.yaml'
         containers: 'dellemcacr.azurecr.io/product-service:$(tag)'

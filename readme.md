@@ -3,7 +3,8 @@ This is a simple Spring boot microservice which is dockerized. This version of t
 To use the app using CosmodDB database, checkout the cosmosdb branch from this repo.
 
 ## Pre requisite:
- - Create a new Service Connection in Devops pipeline. Name it - aks-sc
+ - Ensure the Kubernetes service connection is created for pipeline.
+ - Ensure the ACR service connection is created for pipeline.
  - Infrastructure pipelines are created
 
 ## Execute the pipeline in Azure DevOps
